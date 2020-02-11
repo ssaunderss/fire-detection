@@ -15,10 +15,11 @@ import numpy as np
 import pandas as pd
 
 ### Define/import all functions
-## Import VIIRS & MODIS
-fires = pd.read_csv('data/fire_nrt_M6_103976.csv') # for debugging we only import the Near-Real-Time MODIS data
-## Generate df from the data
-## Web_scraping function
+## Import VIIRS & MODIS as df
+modis_df = pd.read_csv('data/fire_nrt_M6_103976.csv') # for debugging we only import the Near-Real-Time data
+viirs_df = pd.read_csv('data/fire_nrt_V1_103977.csv') # for debugging we only import the Near-Real-Time data
+##TODO Drop the columns that are not useful to clean the data
+##TODO Ling the Web_scraping function
 
 ## Generate Global Grid
 '''
@@ -37,5 +38,7 @@ def grid_generator(s_lat= -5, e_lat=-45, s_lon = 105, e_lon = 155, cell_side_len
   return spatial_grid
 print(grid_generator())
 
+##TODO Merge the datasets onto the grid
+
 ## Call the Visualise function
-generate_map(fires)
+generate_map(modis_df)
