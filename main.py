@@ -15,9 +15,12 @@ import numpy as np
 import pandas as pd
 #import web_scraped_wiki as wsw
 import subprocess
+import plotly.graph_objects
 
 ### Define/import all functions
 ## Import VIIRS & MODIS as df
+from visualisation import generate_map
+
 modis_df = pd.read_csv('data/fire_nrt_M6_103976.csv') # for debugging we only import the Near-Real-Time data
 viirs_df = pd.read_csv('data/fire_nrt_V1_103977.csv') # for debugging we only import the Near-Real-Time data
 
