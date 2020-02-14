@@ -31,8 +31,7 @@ viirs_df = viirs_df[['latitude','longitude','bright_ti4','acq_date','instrument'
 ##TODO Link the Web_scraping function
 #subprocess.call('./web_scraped_wiki.py')
 #wiki_df = pd.read_csv('data/fire_table.csv')
-
-#the webscraping dependency might run into problems when it runs as a script in some IDEs
+#Note: the webscraping dependency might run into problems when it runs as a script in some IDEs
 
 
 ## Generate Global Grid
@@ -51,40 +50,38 @@ def grid_generator(s_lat= -5, e_lat=-45, s_lon = 105, e_lon = 155, cell_side_len
   return spatial_grid
 print(grid_generator())
 
-##TODO Need to figure out how to come up with an efficient way to tie them together
-
-#Cleans lat and long so that they correspond to values generated in our spatial grid by passing
-#columns through a lambda function
+##Cleans lat and long so that they correspond to values generated in our spatial grid by passing
+##columns through a lambda function
 modis_df['latitude'] = modis_df['latitude'].map(lambda x: (((x + 5) // .00375 ) * .00375) - 5)
 modis_df['longitude'] = modis_df['longitude'].map(lambda x: (((x - 105) // .00375) * .00375) + 105)
 viirs_df['latitude'] = viirs_df['latitude'].map(lambda x: (((x + 5) // .00375 ) * .00375) - 5)
 viirs_df['longitude'] = viirs_df['longitude'].map(lambda x: (((x - 105) // .00375) * .00375) + 105)
 
-#Rename of modis columns of dataset so we can concat later
+#Rename modis brightness columns of dataset so we can concatenate the datasets easily
 modis_df.rename(columns={'brightness': 'bright_ti4','bright_t31': 'bright_ti5'}, inplace=True)
 
-#Now that the lat/long correspond, need to groupby lat/long and aggregate the datapoints
-a = modis_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist())  #around 20s
-b = viirs_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist()) #around 6m51s
+#Now that the lat/long correspond to spatial grid, need to groupby lat/long and aggregate the entities
+a = modis_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist())  #around 20s on sample
+b = viirs_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist()) #around 6m51s on sample
 
-##TODO Concat cleaned MODIS and VIIRS together
+#Concats the MODIS and VIIRS datasets together
 dfs = [a, b]
-comb_df = pd.concat(dfs)l
-comb_df.groupby(['latitude','longitude']).agg(sum)  #around 11m27s
+comb_df = pd.concat(dfs)
+comb_df.groupby(['latitude','longitude']).agg(sum)  #around 11m27s on sample
+
+#Need to rename the columns in MODIS df back to what it was pre-concat
+modis_df.rename(columns={'bright_ti4': 'brightness','bright_ti5': 'bright_t31'}, inplace=True)
 
 #Generate CSV of combined dataframes
 comb_df.to_csv('data/combined_dataframes.csv')
 
-
-
-#tests that there are cells with more than one entry in them
+##TEST: tests that there are cells with more than one entry in them, KEEP this commented
 #a = modis_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist())
 #a.loc[np.array(list(map(len,a.brightness.values)))>1]
 
-
+#calls the grid_generator object and creates the grid object
 grid = grid_generator()
 grid.rename(columns={0 : 'lat', 1 : 'long'}, inplace=True)
-#grid["primary_key"] = grid[['lat','long']].agg('-'.join, axis=1)
 
 ## Call the Visualise function
-generate_map(comb_df)
+#generate_map(comb_df)
