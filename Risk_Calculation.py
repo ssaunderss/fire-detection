@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-import time
-import pandas as pd 
 import ast
+import time
 import datetime
 import statistics 
 from tqdm import tqdm
@@ -17,16 +16,16 @@ def calculateDays(date1, date2):
     interval = day1 - day2
     return interval.days
 
-
-# from visualisation import generate_map
-
+# read the cleaned and procesed data
 c_df = pd.read_csv('data/combined_dataframes.csv')
 
+# Convert the contents of the pandas array from strings looking like lists to actual lists
 brightness_MODIS = c_df.loc[:,'bright_ti4'].apply(ast.literal_eval)
 brightness_VIIRS = c_df.loc[:,'bright_ti5'].apply(ast.literal_eval)
 instrument = c_df.loc[:,'instrument'].apply(ast.literal_eval)
-risk = np.zeros(len(c_df.latitude))
 
+# Initialise the risk vector
+risk = np.zeros(len(c_df.latitude))
 
 for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightness_MODIS")):
     risk[i] += statistics.mean(list)
@@ -34,7 +33,7 @@ for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightn
 for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightness_VIIRS")):
     risk[i] += statistics.mean(list)
 
-# calculate the average brightness
+# Calculate the average of each of the brightnesses
 for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the average")):
     risk[i] = risk[i] / len(instrument[i]) # divide by the number of instruments i.e. mean of 1 or mean of 2
 # risk = np.mean(brightness_MODIS, brightness_VIIRS) # does not work
@@ -56,6 +55,6 @@ for i, value in enumerate(tqdm(iterable = timeData, desc = "Calculate Time Range
 for i,list in enumerate(tqdm(iterable = risk, desc = "Generate the final Risk")):
     risk[i] = risk[i] / timeRange[i]
 
-
+# export the risk as a CSV
 c_df['Risk'] = risk
-c_df.to_csv("riskcalculation.csv")
+c_df.to_csv("data/riskcalculation.csv")
