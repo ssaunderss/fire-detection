@@ -1,9 +1,2 @@
-
 desktop.ini
-data/fire_archive_M6_103976.csv
-data/fire_nrt_M6_103976.csv
-data/fire_archive_V1_103977.csv
-data/fire_archive_V1_103977.csv
-data/fire_nrt_V1_103977.csv
-data/MODIS_original.zip
-data/VIIRS_original.zip
+data/*
