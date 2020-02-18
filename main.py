@@ -3,13 +3,7 @@ Project: Fire-Detection
 Capabilities: Visualise all the fires in target region of the word using data from historical NASA satellites and mark the most impactful fires.
 MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
 
-Installation instructions:
-0. Install Python version 3.7x
-1. Place all .py files in the same directory
-2. Download and unzip the data files placing them in a ./data directory
-3. Install required packages (using conda or pip):
-    $ conda install -c plotly plotly=4.5.0
-4. Run main.py
+Installation Instructions & Description: please see Readme 
 '''
 import numpy as np
 import pandas as pd
@@ -83,5 +77,6 @@ comb_df.to_csv('data/combined_dataframes.csv')
 grid = grid_generator()
 grid.rename(columns={0 : 'lat', 1 : 'long'}, inplace=True)
 
-## Call the Visualise function
-#generate_map(comb_df)
+
+# Call the Visualise function
+# generate_map(results)
