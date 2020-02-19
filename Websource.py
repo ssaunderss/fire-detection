@@ -1,8 +1,10 @@
 #import all modules
 import urllib.request
 from bs4 import BeautifulSoup
+import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+import plotly.express as px
 
 # Part 1, get a list of city for visualization ploting
 
@@ -17,7 +19,28 @@ s = city_df['Place Name'].str.split(", ", n = 2, expand = True)
 city_df["City"]= s[0]
 city_df["State"]= s[1]
 city_df["Country"]= s[2]
-print(city_df)
+
+pd.options.mode.chained_assignment = None
+
+# cleaning
+city_df['City'][8] = 'Chessnok'
+city_df['State'][8] = 'NSW'
+city_df['Country'][8] = 'Australia'
+city_df['City'][71] = 'Greenvale'
+city_df['State'][71] = 'Victoria'
+city_df['Country'][71] = 'Australia'
+city_df['City'][83] = 'Gladstone'
+city_df['State'][83] = 'QLD'
+city_df['Country'][83] = 'Australia'
+city_df['City'][80] = 'Gladstone'
+city_df['State'][80] = 'QLD'
+city_df['Country'][80] = 'Australia'
+city_df['State'] = city_df['State'].str.replace('Queensland', 'QLD')
+city_df['State'] = city_df['State'].str.replace('Tasmania', 'TAS')
+city_df['State'] = city_df['State'].str.replace('Victoria', 'VIC')
+city_df['State'] = city_df['State'].str.replace('Canberra', 'ACT')
+city_df['State'] = city_df['State'].str.replace('Northern Territory', 'NT')
+
 
 # Part 2, summarize historical numbers by state
 
@@ -82,6 +105,16 @@ df1=pd.pivot_table(fire_df, index=['States'],values=['HA','Fatalities','Homes'],
 df2=fire_df.groupby('States').Date.nunique()
 wiki_df = pd.concat([df1,df2],axis=1)
 wiki_df= wiki_df.rename(columns={'Date': 'FireCount'})
-print(wiki_df)
+wiki_df['State_ab']=('NA', 'ACT', 'NW', 'NSW', 'NT', 'SA', 'TAS', 'VIC', 'WA')
 
-# wiki_df.to_csv (r'data/wiki_table.csv', index = None, header=True)
+# left join two dataframes
+combine_df = pd.merge(left=city_df,right=wiki_df, how='left', left_on='State', right_on='State_ab')
+# print(combine_df)
+# combine_df.to_csv ('combine_table.csv', index = None, header=True)
+
+# plot on map
+fig = px.scatter_mapbox(combine_df, lat="Latitude", lon="Longitude", hover_name="City", hover_data=["Fatalities", "Homes"],
+                        color_discrete_sequence=["fuchsia"], zoom=3, height=300)
+fig.update_layout(mapbox_style="open-street-map")
+fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+fig.show()
