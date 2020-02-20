@@ -30,68 +30,63 @@ def convertConfidence(confidence):
                     confidence[i][j] = 0
     return confidence
 
+def calc_risk():
+    # read the cleaned and procesed data
+    c_df = pd.read_csv('data/combined_dataframes.csv')
 
-# read the cleaned and procesed data
-c_df = pd.read_csv('data/combined_dataframes.csv')
+    # Convert the contents of the pandas array from strings looking like lists to actual lists
+    brightness_MODIS = c_df.loc[:,'bright_ti4'].apply(ast.literal_eval) # brightness from MODIS
+    brightness_VIIRS = c_df.loc[:,'bright_ti5'].apply(ast.literal_eval) # birghtness from VIIRS
+    confidence = c_df.confidence.apply(ast.literal_eval)
+    instrument = c_df.loc[:,'instrument'].apply(ast.literal_eval)
 
-# Convert the contents of the pandas array from strings looking like lists to actual lists
-brightness_MODIS = c_df.loc[:,'bright_ti4'].apply(ast.literal_eval) # brightness from MODIS
-brightness_VIIRS = c_df.loc[:,'bright_ti5'].apply(ast.literal_eval) # birghtness from VIIRS
-confidence = c_df.confidence.apply(ast.literal_eval)
-instrument = c_df.loc[:,'instrument'].apply(ast.literal_eval)
+    # Convert every element in confidence to integer
+    confidence = convertConfidence(confidence)
+    c_df.confidence = confidence
 
-# Convert every element in confidence to integer
-confidence = convertConfidence(confidence)
-c_df.confidence = confidence
+    # Initialise the risk vector
+    risk = np.zeros(len(c_df.latitude))
 
-# Initialise the risk vector
-risk = np.zeros(len(c_df.latitude))
-
-# Calculate brightness by confidence weighted average
-for i in tqdm(iterable = range(len(confidence)), desc = "Calculate brightness by confidence weighted average"):
-    for j in range(len(confidence[i])):
-        if len(confidence[i]) == len(brightness_MODIS[i]) == len(brightness_VIIRS[i]):
-            risk[i] += ((confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])) / len(confidence[i])
+    # Calculate brightness by confidence weighted average
+    for i in tqdm(iterable = range(len(confidence)), desc = "Calculate brightness by confidence weighted average"):
+        for j in range(len(confidence[i])):
+            if len(confidence[i]) == len(brightness_MODIS[i]) == len(brightness_VIIRS[i]):
+                risk[i] += ((confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])) / len(confidence[i])
         else:
             risk[i] = (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) +  (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
 
+    # Initialise the risk vector
+    #risk = np.zeros(len(c_df.latitude))
+    #for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightness_MODIS")):
+        #risk[i] += statistics.mean(list)
+    #for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightness_VIIRS")):
+        #risk[i] += statistics.mean(list)
 
-'''
-# Initialise the risk vector
-risk = np.zeros(len(c_df.latitude))
+    # Calculate the average of each of the brightnesses
+    for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the brightness average")):
+        # divide by the number of instruments i.e. mean of 1 or mean of 2
+        risk[i] = risk[i] / len(instrument[i])
 
-for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightness_MODIS")):
-    risk[i] += statistics.mean(list)
+    timeRange = np.zeros(len(c_df.latitude))
+    timeData = c_df["acq_date"].apply(ast.literal_eval)
+    for i, value in enumerate(tqdm(iterable = timeData, desc = "Calculate Time Range")):
+        # if only one day, the result will be the difference between that and the date today
+        if len(value) == 1:
+            timeRange[i] = abs(calculateDays("2020-02-15",timeData[i][0]))
+        # if more than one day, the result will be the difference between the start day and the end day
+        elif len(value) > 1:
+            # start day
+            date1 = timeData[i][0]
+            # end day
+            date2 = timeData[i][-1]
+            timeRange[i] = abs(calculateDays(date2,date1))
+    # divided by the time range
+    for i,list in enumerate(tqdm(iterable = risk, desc = "Generate the final Risk")):
+        risk[i] = risk[i] / timeRange[i]
 
-for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightness_VIIRS")):
-    risk[i] += statistics.mean(list)
-'''
+    # generate columns called TimeRange and Risk
+    c_df["TimeRange"] = timeRange
+    c_df['Risk'] = risk
 
-# Calculate the average of each of the brightnesses
-for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the brightness average")):
-    risk[i] = risk[i] / len(instrument[i]) # divide by the number of instruments i.e. mean of 1 or mean of 2
-# risk = np.mean(brightness_MODIS, brightness_VIIRS) # does not work
-
-timeRange = np.zeros(len(c_df.latitude))
-timeData = c_df["acq_date"].apply(ast.literal_eval)
-for i, value in enumerate(tqdm(iterable = timeData, desc = "Calculate Time Range")):
-    # if only one day, the result will be the difference between that and the date today
-    if len(value) == 1:
-        timeRange[i] = abs(calculateDays("2020-02-15",timeData[i][0]))
-    # if more than one day, the result will be the difference between the start day and the end day
-    elif len(value) > 1:
-        # start day
-        date1 = timeData[i][0]
-        # end day
-        date2 = timeData[i][-1]
-        timeRange[i] = abs(calculateDays(date2,date1))
-# divided by the time range
-for i,list in enumerate(tqdm(iterable = risk, desc = "Generate the final Risk")):
-    risk[i] = risk[i] / timeRange[i]
-
-# generate columns called TimeRange and Risk
-c_df["TimeRange"] = timeRange
-c_df['Risk'] = risk
-
-# export the risk as a CSV
-c_df.to_csv("data/riskcalculation.csv")
+    # export the risk as a CSV
+    c_df.to_csv("data/riskcalculation.csv")
