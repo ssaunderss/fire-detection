@@ -53,7 +53,7 @@ for i in tqdm(iterable = range(len(confidence)), desc = "Calculate brightness by
         if len(confidence[i]) == len(brightness_MODIS[i]) == len(brightness_VIIRS[i]):
             risk[i] += (confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])
         else:
-            risk[i] += (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) +  (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
+            risk[i] = (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) +  (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
 
 
 '''
