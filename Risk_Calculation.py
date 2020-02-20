@@ -16,14 +16,46 @@ def calculateDays(date1, date2):
     interval = day1 - day2
     return interval.days
 
+# look through the confidence, there are some string "h", "n" and "l"
+# This instruction is to convert these three strings to "100", "50" and "0"
+def convertConfidence(confidence):
+    for i in tqdm(iterable = range(len(confidence)), desc = "Convert confidence"):
+        for j in range(len(confidence[i])):
+            if isinstance(confidence[i][j], str):
+                if confidence[i][j] == "h":
+                    confidence[i][j] = 100
+                elif confidence[i][j] == "n":
+                    confidence[i][j] = 50
+                elif confidence[i][j] == "l":
+                    confidence[i][j] = 0
+    return confidence
+
+
 # read the cleaned and procesed data
 c_df = pd.read_csv('data/combined_dataframes.csv')
 
 # Convert the contents of the pandas array from strings looking like lists to actual lists
-brightness_MODIS = c_df.loc[:,'bright_ti4'].apply(ast.literal_eval)
-brightness_VIIRS = c_df.loc[:,'bright_ti5'].apply(ast.literal_eval)
+brightness_MODIS = c_df.loc[:,'bright_ti4'].apply(ast.literal_eval) # brightness from MODIS
+brightness_VIIRS = c_df.loc[:,'bright_ti5'].apply(ast.literal_eval) # birghtness from VIIRS
+confidence = c_df.confidence.apply(ast.literal_eval)
 instrument = c_df.loc[:,'instrument'].apply(ast.literal_eval)
 
+# Convert every element in confidence to integer
+confidence = convertConfidence(confidence)
+
+# Initialise the risk vector
+risk = np.zeros(len(c_df.latitude))
+
+# Calculate brightness by confidence weighted average
+for i in tqdm(iterable = range(len(confidence)), desc = "Calculate brightness by confidence weighted average"):
+    for j in range(len(confidence[i])):
+        if len(confidence[i]) == len(brightness_MODIS[i]) == len(brightness_VIIRS[i]):
+            risk[i] += (confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])
+        else:
+            risk[i] += (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) +  (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
+
+
+'''
 # Initialise the risk vector
 risk = np.zeros(len(c_df.latitude))
 
@@ -32,6 +64,7 @@ for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightn
 
 for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightness_VIIRS")):
     risk[i] += statistics.mean(list)
+'''
 
 # Calculate the average of each of the brightnesses
 for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the average")):
