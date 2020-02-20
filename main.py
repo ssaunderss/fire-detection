@@ -15,23 +15,13 @@ import pandas as pd
 # first we need the user to decide if they will be processing all new data or be using our data
 user_input = False
 answer = "y"
-<<<<<<< HEAD
 print("By default we use pre-cleaned data to demonstrate the capabilities of this code,")
 print("if you would like to use up to date data, you will have to process the data on your")
 print("own. This process takes a significant amount of time ~2 hours, so we recommend just")
 print("using the data we have already process.\n\n")
 while user_input == False:
   try:
-=======
-while user_input == False:
-  try:
-    print("""By default we use pre-cleaned data to demonstrate the capabilities of this code,
-      if you would like to use up to date data, you will have to process the data on your own.
-      This process takes a significant amount of time ~2 hours, so we recommend just using the data
-      we have already process.""")
->>>>>>> e402203644b4ab874c823bc9e7341189e7ebfd7a
     answer = input("Would you like to use default data? (y/n): ")
-
   except:
     print("Wrong format")
     user_input = False
@@ -51,9 +41,6 @@ if answer == "n":
 results = pd.read_csv("data/riskcalculation.csv")
 
 # Call the Visualise function
-<<<<<<< HEAD
 # Generating the map takes around 2 minutes
-=======
->>>>>>> e402203644b4ab874c823bc9e7341189e7ebfd7a
 generate_map(results)
 ws.historical_map()
