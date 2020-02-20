@@ -5,78 +5,41 @@ MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan 
 
 Installation Instructions & Description: please see Readme 
 '''
-import numpy as np
-import pandas as pd
-#import web_scraped_wiki as wsw
-import subprocess
-
-### Define/import all functions
-## Import VIIRS & MODIS as df
 from visualisation import generate_map
+import subprocess
+import process_data as pro
+import Risk_Calculation as rc
+import Websource as ws
+import pandas as pd
 
-modis_df = pd.read_csv('data/fire_nrt_M6_103976.csv') # for debugging we only import the Near-Real-Time data
-viirs_df = pd.read_csv('data/fire_nrt_V1_103977.csv') # for debugging we only import the Near-Real-Time data
+# first we need the user to decide if they will be processing all new data or be using our data
+user_input = False
+answer = "y"
+while user_input:
+  try:
+    print("""By default we use pre-cleaned data to demonstrate the capabilities of this code,
+    if you would like to use up to date data, you will have to process the data on your own.
+     This process takes a significant amount of time ~2 hours, so we recommend just using the data
+     we have already process.""")
+    answer = input("Would you like to use default data? (y/n)")
+  except:
+    print("Wrong format")
+    user_input = False
+  if answer != "y" and answer != "n":
+    print("You have to enter either \"y\" or \"n\", please try again")
+  else:
+    user_input = False
 
-##Drop all columns not relevant to modis and viirs dfs
-modis_df = modis_df[['latitude','longitude','brightness','acq_date','instrument','confidence','bright_t31']]
-viirs_df = viirs_df[['latitude','longitude','bright_ti4','acq_date','instrument','confidence','bright_ti5']]
+# if the user wants to use new data, this will call the process_data file and reprocess all data and
+# return new data to display
+if answer == "n":
+  pro.transform_data()
+  #refreshes the risk calculation so the map will also have up to date data
+  rc.calc_risk()
 
-
-##TODO Link the Web_scraping function
-#subprocess.call('./web_scraped_wiki.py')
-#wiki_df = pd.read_csv('data/fire_table.csv')
-#Note: the webscraping dependency might run into problems when it runs as a script in some IDEs
-
-
-## Generate Global Grid
-'''
-Generate Global Gid Dataframe which has the holding coordinate pairs for the centers of the cells in a grid with a given resolution
-Inputs and their defaults: s_lat , e_lat = -5 , -45 # start and end lat !they have to be in the same hemisphere i.e. same sign
-                           s_lon , e_lon = 105, 155 # start and end longitude
-                           cell_side_length = 0.75 # kilometers
-'''
-def grid_generator(s_lat= -5, e_lat=-45, s_lon = 105, e_lon = 155, cell_side_length = 0.375):
-  resolution = cell_side_length/(1*100) # degrees of longitude and latitude per kilometer, 1 degree is 100 km at latitude 20 degrees
-  lat = np.arange(s_lat, e_lat, np.sign(s_lat)*resolution) # generate latitude vector
-  lon = np.arange(s_lon, e_lon, np.sign(s_lon)*resolution) # generate longitude vector
-  spatial_grid = np.transpose([np.tile(lat, len(lon)), np.repeat(lon, len(lat))]) # merge the two to form coordinate pairs for the center of each cell
-  spatial_grid = pd.DataFrame(spatial_grid) # dataframe holding the centers of each of the grid cells with the given resolution
-  return spatial_grid
-print(grid_generator())
-
-##Cleans lat and long so that they correspond to values generated in our spatial grid by passing
-##columns through a lambda function
-modis_df['latitude'] = modis_df['latitude'].map(lambda x: (((x + 5) // .00375 ) * .00375) - 5)
-modis_df['longitude'] = modis_df['longitude'].map(lambda x: (((x - 105) // .00375) * .00375) + 105)
-viirs_df['latitude'] = viirs_df['latitude'].map(lambda x: (((x + 5) // .00375 ) * .00375) - 5)
-viirs_df['longitude'] = viirs_df['longitude'].map(lambda x: (((x - 105) // .00375) * .00375) + 105)
-
-#Rename modis brightness columns of dataset so we can concatenate the datasets easily
-modis_df.rename(columns={'brightness': 'bright_ti4','bright_t31': 'bright_ti5'}, inplace=True)
-
-#Now that the lat/long correspond to spatial grid, need to groupby lat/long and aggregate the entities
-a = modis_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist())  #around 20s on sample
-b = viirs_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist()) #around 6m51s on sample
-
-#Concats the MODIS and VIIRS datasets together
-dfs = [a, b]
-comb_df = pd.concat(dfs)
-comb_df.groupby(['latitude','longitude']).agg(sum)  #around 11m27s on sample
-
-#Need to rename the columns in MODIS df back to what it was pre-concat
-modis_df.rename(columns={'bright_ti4': 'brightness','bright_ti5': 'bright_t31'}, inplace=True)
-
-#Generate CSV of combined dataframes
-comb_df.to_csv('data/combined_dataframes.csv')
-
-##TEST: tests that there are cells with more than one entry in them, KEEP this commented
-#a = modis_df.groupby(['latitude','longitude']).aggregate(lambda x: x.unique().tolist())
-#a.loc[np.array(list(map(len,a.brightness.values)))>1]
-
-#calls the grid_generator object and creates the grid object
-grid = grid_generator()
-grid.rename(columns={0 : 'lat', 1 : 'long'}, inplace=True)
-
+#Before visualizing, need to grab the riskcalculation.csv
+results = pd.read_csv("data/riskcalculation.csv")
 
 # Call the Visualise function
-# generate_map(results)
+generate_map(results)
+ws.historical_map()
