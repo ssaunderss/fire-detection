@@ -42,6 +42,7 @@ instrument = c_df.loc[:,'instrument'].apply(ast.literal_eval)
 
 # Convert every element in confidence to integer
 confidence = convertConfidence(confidence)
+c_df.confidence = confidence
 
 # Initialise the risk vector
 risk = np.zeros(len(c_df.latitude))
@@ -88,6 +89,9 @@ for i, value in enumerate(tqdm(iterable = timeData, desc = "Calculate Time Range
 for i,list in enumerate(tqdm(iterable = risk, desc = "Generate the final Risk")):
     risk[i] = risk[i] / timeRange[i]
 
-# export the risk as a CSV
+# generate columns called TimeRange and Risk
+c_df["TimeRange"] = timeRange
 c_df['Risk'] = risk
+
+# export the risk as a CSV
 c_df.to_csv("data/riskcalculation.csv")
