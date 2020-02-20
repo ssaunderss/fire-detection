@@ -51,7 +51,7 @@ risk = np.zeros(len(c_df.latitude))
 for i in tqdm(iterable = range(len(confidence)), desc = "Calculate brightness by confidence weighted average"):
     for j in range(len(confidence[i])):
         if len(confidence[i]) == len(brightness_MODIS[i]) == len(brightness_VIIRS[i]):
-            risk[i] += (confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])
+            risk[i] += ((confidence[i][j] * 0.01) * (brightness_MODIS[i][j]) +  (confidence[i][j] * 0.01) * (brightness_VIIRS[i][j])) / len(confidence[i])
         else:
             risk[i] = (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) +  (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
 
@@ -68,7 +68,7 @@ for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightn
 '''
 
 # Calculate the average of each of the brightnesses
-for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the average")):
+for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the brightness average")):
     risk[i] = risk[i] / len(instrument[i]) # divide by the number of instruments i.e. mean of 1 or mean of 2
 # risk = np.mean(brightness_MODIS, brightness_VIIRS) # does not work
 
