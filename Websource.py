@@ -113,7 +113,7 @@ def historical_map():
     combine_df.to_csv ('data/websource_combined.csv', header=True)
    
     # plot on map
-    fig = px.scatter_mapbox(combine_df, lat="Latitude", lon="Longitude", hover_name="City", 
+    fig = px.scatter_mapbox(combine_df, lat="Latitude", lon="Longitude", hover_name="City",
                             hover_data=["Fatalities", "Area_burned", "Homes_damaged", "FireCount"],
                             zoom=3, height=300)
     fig.update_layout(mapbox_style="open-street-map")
