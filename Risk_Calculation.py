@@ -57,13 +57,6 @@ def calc_risk():
             risk[i] = (statistics.mean(confidence[i])) * 0.01 * statistics.mean(brightness_MODIS[i]) + \
                       (statistics.mean(confidence[i]) * 0.01) * statistics.mean(brightness_VIIRS[i])
 
-    # Initialise the risk vector
-    #risk = np.zeros(len(c_df.latitude))
-    #for i,list in enumerate(tqdm(iterable = brightness_MODIS, desc = "Insert brightness_MODIS")):
-        #risk[i] += statistics.mean(list)
-    #for i,list in enumerate(tqdm(iterable = brightness_VIIRS, desc = "Insert brightness_VIIRS")):
-        #risk[i] += statistics.mean(list)
-
     # Calculate the average of each of the brightnesses
     for i,list in enumerate(tqdm(iterable = risk, desc = "Calculate the brightness average")):
         # divide by the number of instruments i.e. mean of 1 or mean of 2
@@ -71,6 +64,7 @@ def calc_risk():
 
     timeRange = np.zeros(len(c_df.latitude))
     timeData = c_df["acq_date"].apply(ast.literal_eval)
+    
     for i, value in enumerate(tqdm(iterable = timeData, desc = "Calculate Time Range")):
         # if only one day, the result will be the difference between that and the date today
         if len(value) == 1:
@@ -82,6 +76,7 @@ def calc_risk():
             # end day
             date2 = timeData[i][-1]
             timeRange[i] = abs(calculateDays(date2,date1))
+
     # divided by the time range
     for i,list in enumerate(tqdm(iterable = risk, desc = "Generate the final Risk")):
         risk[i] = risk[i] / timeRange[i]
