@@ -15,10 +15,10 @@ import pandas as pd
 # first we need the user to decide if they will be processing all new data or be using our data
 user_input = False
 answer = "y"
-print("By default we use pre-cleaned data to demonstrate the capabilities of this code,")
-print("if you would like to use up to date data, you will have to process the data on your")
-print("own. This process takes a significant amount of time ~2 hours, so we recommend just")
-print("using the data we have already process.\n\n")
+print("By default we use pre-cleaned data to demonstrate the capabilities of our code,")
+print("if you would like to use newer data, you will have to process the data on your")
+print("own. This process takes a significant amount of time ~2 hours, so we recommend")
+print("using our pre-processed data.\n\n")
 while user_input == False:
   try:
     answer = input("Would you like to use default data? (y/n): ")
