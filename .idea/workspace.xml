@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a186af2c-c314-44be-9013-87e783025806" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/fire-detection.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fire-detection.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Risk_Calculation.py" beforeDir="false" afterPath="$PROJECT_DIR$/Risk_Calculation.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Websource.py" beforeDir="false" afterPath="$PROJECT_DIR$/Websource.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/combined_dataframes.csv" beforeDir="false" afterPath="$PROJECT_DIR$/data/combined_dataframes.csv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/process_data.py" beforeDir="false" afterPath="$PROJECT_DIR$/process_data.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/visualisation.py" beforeDir="false" afterPath="$PROJECT_DIR$/visualisation.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +36,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.Risk_Calculation">
+  <component name="RunManager" selected="Python.main">
     <configuration name="Risk_Calculation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="fire-detection" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -102,9 +102,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python.Risk_Calculation" />
         <item itemvalue="Python.Websource" />
-        <item itemvalue="Python.main" />
       </list>
     </recent_temporary>
   </component>
@@ -122,22 +122,26 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state width="1403" height="325" key="GridCell.Tab.0.bottom" timestamp="1582328192475">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1419" height="297" key="GridCell.Tab.0.bottom" timestamp="1582510806537">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1403" height="325" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1582328192475" />
-    <state width="1403" height="325" key="GridCell.Tab.0.center" timestamp="1582328192474">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1419" height="297" key="GridCell.Tab.0.bottom/0.0.1440.900@0.0.1440.900" timestamp="1582510806537" />
+    <state width="1408" height="308" key="GridCell.Tab.0.bottom/0.23.1440.877@0.23.1440.877" timestamp="1582464804305" />
+    <state width="1419" height="297" key="GridCell.Tab.0.center" timestamp="1582510806536">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1403" height="325" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1582328192474" />
-    <state width="1403" height="325" key="GridCell.Tab.0.left" timestamp="1582328192474">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1419" height="297" key="GridCell.Tab.0.center/0.0.1440.900@0.0.1440.900" timestamp="1582510806536" />
+    <state width="1408" height="308" key="GridCell.Tab.0.center/0.23.1440.877@0.23.1440.877" timestamp="1582464804304" />
+    <state width="1419" height="297" key="GridCell.Tab.0.left" timestamp="1582510806536">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1403" height="325" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1582328192474" />
-    <state width="1403" height="325" key="GridCell.Tab.0.right" timestamp="1582328192474">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state width="1419" height="297" key="GridCell.Tab.0.left/0.0.1440.900@0.0.1440.900" timestamp="1582510806536" />
+    <state width="1408" height="308" key="GridCell.Tab.0.left/0.23.1440.877@0.23.1440.877" timestamp="1582464804304" />
+    <state width="1419" height="297" key="GridCell.Tab.0.right" timestamp="1582510806537">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state width="1403" height="325" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1582328192474" />
+    <state width="1419" height="297" key="GridCell.Tab.0.right/0.0.1440.900@0.0.1440.900" timestamp="1582510806537" />
+    <state width="1408" height="308" key="GridCell.Tab.0.right/0.23.1440.877@0.23.1440.877" timestamp="1582464804305" />
     <state width="1403" height="285" key="GridCell.Tab.1.bottom" timestamp="1582328192470">
       <screen x="0" y="23" width="1440" height="877" />
     </state>
@@ -154,9 +158,10 @@
       <screen x="0" y="23" width="1440" height="877" />
     </state>
     <state width="1403" height="285" key="GridCell.Tab.1.right/0.23.1440.877@0.23.1440.877" timestamp="1582328192469" />
-    <state x="164" y="44" width="1112" height="722" key="SettingsEditor" timestamp="1582300876253">
-      <screen x="0" y="23" width="1440" height="877" />
+    <state x="164" y="22" width="1112" height="722" key="SettingsEditor" timestamp="1582510168211">
+      <screen x="0" y="0" width="1440" height="900" />
     </state>
+    <state x="164" y="22" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1582510168211" />
     <state x="164" y="44" width="1112" height="722" key="SettingsEditor/0.23.1440.877@0.23.1440.877" timestamp="1582300876253" />
     <state x="511" y="385" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1582328191040">
       <screen x="0" y="23" width="1440" height="877" />

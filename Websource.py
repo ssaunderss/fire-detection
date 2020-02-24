@@ -1,3 +1,21 @@
+'''
+Project: Fire-Detection
+File Name: Websource.py
+Group Members:  Yuan Li, Austin Saunders, Sergiu Iliev, Peng Zeng
+Capabilities: Scrapes two websites: historical fires in Australia and lists of cities in Australia, then cleans the
+data for visualization
+MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
+
+Dependency Notes
+main.py imports this module
+
+Import Notes
+This module imports
+ - urllib request to connect to website
+ - beautifulsoup4 to scrape websites and convert them to an object that is easy to work with
+ - plotly graph objects and express so we can visualize our results
+ - pandas and numpy so that we can manipulate large data sets and perform vectorized operations
+'''
 #import all modules
 import urllib.request
 from bs4 import BeautifulSoup
@@ -114,8 +132,7 @@ def historical_map():
    
     # plot on map
     fig = px.scatter_mapbox(combine_df, lat="Latitude", lon="Longitude", hover_name="City",
-                            hover_data=["Fatalities", "Area_burned", "Homes_damaged", "FireCount"],
-                            zoom=3, height=300)
+                            hover_data=["Fatalities", "Area_burned", "Homes_damaged", "FireCount"],zoom=3)
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     fig.show()

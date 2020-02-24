@@ -1,9 +1,18 @@
 '''
 Project: Fire-Detection
-Capabilities: Visualise all the fires in target region of the word using data from historical NASA satellites and mark the most impactful fires.
+File Name: main.py
+Group Members: Austin Saunders, Sergiu Iliev, Peng Zeng, Yuan Li
+Capabilities: Visualise all the fires in target region of the word using data from historical NASA satellites and
+mark the most impactful fires.
 MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
 
-Installation Instructions & Description: please see Readme 
+Import Notes
+This file imports
+ - process_data.py so we can load and transform VIIRS/MODIS satellite data
+ - Risk_Calculation.py so we can generate historical risk scores for cleaned lat/long coords
+ - Websource.py so we can scrape historical fire/Australian city name information
+ - visualisation.py so we can visualise our end product
+ - pandas so we can read a previously generated csv
 '''
 from visualisation import generate_map
 import subprocess

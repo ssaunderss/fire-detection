@@ -1,9 +1,23 @@
 '''
+Project: Fire-Detection
+File Name: visualisation.py
+Group Members:  Sergiu Iliev, Yuan Li, Austin Saunders, Peng Zeng
+Capabilities: Takes cleaned data and visualizes it on a map of Australia using plotly
+MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
+
 Install instructions
 Required Package: plotly
 $ conda install -c plotly plotly=4.5.0
 
+Dependency Notes
+main.py imports this module
+
+Import Notes
+This module imports
+ - pandas so we can read a previously generated csv
+ - plotly graph objects so we can graph the results
 '''
+
 import pandas as pd
 import plotly.graph_objects as go
 

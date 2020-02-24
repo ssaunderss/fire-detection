@@ -1,3 +1,20 @@
+'''
+Project: Fire-Detection
+File Name: process_data.py
+Group Members:  Austin Saunders, Sergiu Iliev, Yuan Li, Peng Zeng
+Capabilities: Loads MODIS and VIIRS Data, transforms and aggregates all data so it corresponds to
+a spatial grid, then gets passed to Risk_Calculation.py (when called by main.py)
+MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
+
+Dependency Notes
+main.py imports this module
+
+Import Notes
+This module imports
+ - pandas so we can do all data transformations on raw satellite data
+ - numpy for vectorized operations
+'''
+
 import pandas as pd
 import numpy as np
 

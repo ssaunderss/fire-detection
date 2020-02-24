@@ -1,3 +1,27 @@
+'''
+Project: Fire-Detection
+File Name: Risk_Calculation.py
+Group Members:  Peng Zeng, Sergiu Iliev, Yuan Li, Austin Saunders
+Capabilities: Takes in processed data from process_data.py and calculates a historical risk score to be used downstream
+MIT License, Copyright (c) 2020, Sergiu Iliev, Austin Saunders, Peng Zeng, Yuan Li
+
+Install instructions
+Required Package: tqdm
+$ conda install -c conda-forge tqdm
+
+Dependency Notes
+main.py imports this module
+
+Import Notes
+This module imports
+ - pandas so we can do all data transformations on raw satellite data
+ - numpy for vectorized operations
+ - ast to help apply operations in pandas
+ - datetime and time to convert strings to time objects
+ - statistics so we can apply statistical methods on our data
+ - tqdm so we can visualize the progress of the risk calculation process
+'''
+
 import numpy as np
 import pandas as pd
 import ast
